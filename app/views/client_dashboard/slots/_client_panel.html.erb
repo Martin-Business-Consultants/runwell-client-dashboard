@@ -1,0 +1,94 @@
+<%# locals: (client:) %>
+<%# The Client dashboard tab on each client (the :client_panel slot): who hears about what. Their
+    people who can be emailed, and the team, each with a level per kind of notice
+    (ClientDashboard::Rule): always, as usual (the core's own choice) or never. A change saves as
+    it's picked (RulesController). Its first heading is hidden: the tab names it. %>
+<% levels = ClientDashboard::Rule.levels_for(client) %>
+<% contacts = Notice.reachable_contacts(client) %>
+<% people = User.people.active.ordered.to_a %>
+<% options = ClientDashboard::Rule::LEVELS.map { |level, name| [ name, level ] } %>
+<section class="client-dashboard-notices">
+  <h2 class="visually-hidden">Client dashboard</h2>
+
+  <section class="card card--flush">
+    <header class="card__head card__head--bordered">
+      <h3 class="card__title">What <%= client.name %> hears from you</h3>
+      <p class="card__hint">Emails to their people who use the portal: when you write to them on a <%= term(:task).downcase %> (Messages), when something they asked for is picked up or done, and when you share a file. As usual: whoever asked for it or wrote on it (a file goes to everyone). Always: whatever it’s about. Someone who switched the portal’s emails off in their account gets none, and isn’t listed.</p>
+    </header>
+    <% if contacts.any? %>
+      <div class="table-wrap client-dashboard-notices__wrap">
+        <table class="table client-dashboard-notices__table">
+          <thead>
+            <tr>
+              <th>Who</th>
+              <% Notice::CLIENT_KINDS.each do |kind, name| %>
+                <%# herb:key kind %>
+                <th title="<%= name %>"><%= ClientDashboard::Rule::HEADINGS["client.#{kind}"] %></th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% contacts.each do |contact| %>
+              <%# herb:key contact.id %>
+              <tr>
+                <td class="client-dashboard-notices__who"><%= link_to contact.name, main_app.edit_contact_path(contact) %></td>
+                <% Notice::CLIENT_KINDS.each do |kind, name| %>
+                  <%# herb:key kind %>
+                  <td>
+                    <%= form_with url: client_dashboard_client_rules_path(client), method: :patch, scope: :rule, namespace: "notice_#{contact.id}_client_#{kind}", class: "client-dashboard-notices__form", data: { controller: "form" } do |form| %>
+                      <%= form.hidden_field :user_id, value: contact.id %>
+                      <%= form.hidden_field :kind, value: "client.#{kind}" %>
+                      <%= form.select :level, options, { selected: levels.fetch([ contact.id, "client.#{kind}" ], "usual") },
+                            class: "select--sm", aria: { label: "#{contact.name}: #{name}" }, data: { action: "change->form#submit" } %>
+                    <% end %>
+                  </td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <%= empty_state "Nobody at #{client.name} can be emailed yet: give a contact portal access and an email address.", compact: true %>
+    <% end %>
+  </section>
+
+  <section class="card card--flush">
+    <header class="card__head card__head--bordered">
+      <h3 class="card__title">What your team hears from <%= client.name %></h3>
+      <p class="card__hint">Notifications to your people: when a request comes in, and when they write on a <%= term(:task).downcase %> (Messages). As usual: a request goes to owners and managers, and a message on a <%= term(:task).downcase %> to whoever is on it. Always: every one from this <%= term(:client).downcase %>, whoever it’s for.</p>
+    </header>
+    <div class="table-wrap client-dashboard-notices__wrap">
+      <table class="table client-dashboard-notices__table">
+        <thead>
+          <tr>
+            <th>Who</th>
+            <% Notice::TEAM_KINDS.each do |kind, name| %>
+              <%# herb:key kind %>
+              <th title="<%= name %>"><%= ClientDashboard::Rule::HEADINGS["team.#{kind}"] %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% people.each do |person| %>
+            <%# herb:key person.id %>
+            <tr>
+              <td class="client-dashboard-notices__who"><%= person_cell person %></td>
+              <% Notice::TEAM_KINDS.each do |kind, name| %>
+                <%# herb:key kind %>
+                <td>
+                  <%= form_with url: client_dashboard_client_rules_path(client), method: :patch, scope: :rule, namespace: "notice_#{person.id}_team_#{kind}", class: "client-dashboard-notices__form", data: { controller: "form" } do |form| %>
+                    <%= form.hidden_field :user_id, value: person.id %>
+                    <%= form.hidden_field :kind, value: "team.#{kind}" %>
+                    <%= form.select :level, options, { selected: levels.fetch([ person.id, "team.#{kind}" ], "usual") },
+                          class: "select--sm", aria: { label: "#{person.display_name}: #{name}" }, data: { action: "change->form#submit" } %>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

@@ -1,0 +1,46 @@
+<%# locals: (client:, contact:) %>
+<%# The top of the portal's first page (the :portal_dashboard slot): a greeting, then the cards the
+    install shows, in its order (ClientDashboard::Board), each only when it holds something. A task
+    opens in the portal's side sheet; a file opens or downloads. %>
+<% board = ClientDashboard::Board.new(contact) %>
+<header class="client-dashboard__greeting">
+  <h2 class="client-dashboard__hello">Hello, <%= board.first_name %></h2>
+  <p class="client-dashboard__line"><%= board.empty? ? "Nothing new since you were last here." : board.setting.greeting_line %></p>
+</header>
+<% board.cards.each do |card| %>
+  <%# herb:key card.key %>
+  <section class="card card--flush client-dashboard__card">
+    <header class="card__head card__head--bordered">
+      <h2 class="card__title"><%= card.title %></h2>
+      <p class="card__hint"><%= card.hint %></p>
+    </header>
+    <ul class="client-dashboard__list">
+      <% card.items.each do |item| %>
+        <%# herb:key item.id %>
+        <% if item.is_a?(Document) %>
+          <li class="client-dashboard__row client-dashboard__row--file">
+            <%= render "documents/link", document: item, meta: l(item.created_at.in_time_zone.to_date, format: :long) %>
+          </li>
+        <% else %>
+          <li class="client-dashboard__row">
+            <span class="client-dashboard__what">
+              <span class="client-dashboard__title"><%= portal_task_link_to(item) { item.title } %> <%= portal_unread_mark(item) %></span>
+              <span class="client-dashboard__meta">
+                <% if card.key == "done" && item.completed_at %>
+                  Done <%= l item.completed_at.in_time_zone.to_date, format: :short %>
+                <% elsif item.due_on %>
+                  <%= portal_due(item, prefix: "Due ") %>
+                <% elsif item.work %>
+                  <%= item.work.title %>
+                <% end %>
+              </span>
+            </span>
+            <% unless card.key == "done" %>
+              <%= portal_status_tag(item) %>
+            <% end %>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  </section>
+<% end %>

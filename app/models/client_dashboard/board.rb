@@ -31,12 +31,13 @@ module ClientDashboard
       end
 
       def days(count) = count == 1 ? "day" : "#{count} days"
-      def shared = client.tasks.client_visible
+      # Only what this contact sees in the portal (the core's Contact::PortalScope).
+      def shared = contact.portal_tasks
 
       def messages = shared.where(id: unread_ids).includes(:work).order(updated_at: :desc).limit(LIMIT)
       def due = shared.open.where(due_on: ..(Date.current + setting.due_days)).includes(:work).order(:due_on, :id).limit(LIMIT)
       def requests = shared.open.where.not(contact_id: nil).includes(:work).order(created_at: :desc).limit(LIMIT)
-      def documents = client.client_documents.where(created_at: setting.recent_days.days.ago..).limit(LIMIT)
+      def documents = contact.portal_documents.where(created_at: setting.recent_days.days.ago..).limit(LIMIT)
       def done = shared.where(status: "done", completed_at: setting.recent_days.days.ago..).includes(:work).order(completed_at: :desc).limit(LIMIT)
   end
 end

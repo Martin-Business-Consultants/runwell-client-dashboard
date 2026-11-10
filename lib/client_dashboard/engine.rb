@@ -28,7 +28,7 @@ module ClientDashboard
 
     config.to_prepare do
       Runwell::Plugins.register :client_dashboard, name: "Client dashboard", version: ClientDashboard::VERSION, author: "Martin Business Consultants",
-        enabled_by_default: false, requires: ">= 5.30.0", homepage: "https://github.com/Martin-Business-Consultants/runwell-client-dashboard",
+        enabled_by_default: false, requires: ">= 5.31.0", homepage: "https://github.com/Martin-Business-Consultants/runwell-client-dashboard",
         description: "What a client sees on arriving in the portal: new messages, what's coming up, their requests, new files and what was finished, in the cards and order you choose. And, on each client, who hears about what: which of their people are emailed for a message, a request picked up or done, or a file, and who on your team is told when they ask or write."
       Runwell::Plugins.slot :portal_dashboard, :client_dashboard, "client_dashboard/slots/portal_dashboard"
       Runwell::Plugins.slot :client_panel, :client_dashboard, "client_dashboard/slots/client_panel"

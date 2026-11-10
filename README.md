@@ -17,7 +17,8 @@ cards. Each shows only when it holds something:
 - **New documents**: files you shared with them lately
 - **Recently done**: what was finished lately
 
-A task opens in the portal's side sheet, with its discussion; a file opens or downloads.
+A task opens in the portal's side sheet, with its discussion; a file opens or downloads. A contact
+limited to some of their client's work sees only what's theirs here too.
 
 In **Settings › Plugins › Client dashboard** choose which cards show and their order, the line
 under the greeting, and how far the cards look (days ahead for Coming up, days back for New
@@ -55,7 +56,7 @@ dashboard shows them.
 
 ## Installing
 
-In Runwell (5.30 or newer): **Settings › Plugins**, add
+In Runwell (5.31 or newer): **Settings › Plugins**, add
 `Martin-Business-Consultants/runwell-client-dashboard`, then switch it on. Removing it leaves the
 portal opening on the client's work, and notices going to whoever Runwell would usually tell; its
 tables (`client_dashboard_settings`, `client_dashboard_rules`) stay.

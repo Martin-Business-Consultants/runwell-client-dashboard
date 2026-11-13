@@ -9,11 +9,7 @@
 </header>
 <% board.cards.each do |card| %>
   <%# herb:key card.key %>
-  <section class="card card--flush client-dashboard__card">
-    <header class="card__head card__head--bordered">
-      <h2 class="card__title"><%= card.title %></h2>
-      <p class="card__hint"><%= card.hint %></p>
-    </header>
+  <%= ui :card, class: "client-dashboard__card", title: tag.h2(card.title, class: "client-dashboard__card-title"), description: card.hint do %>
     <ul class="client-dashboard__list">
       <% card.items.each do |item| %>
         <%# herb:key item.id %>
@@ -42,5 +38,5 @@
         <% end %>
       <% end %>
     </ul>
-  </section>
+  <% end %>
 <% end %>

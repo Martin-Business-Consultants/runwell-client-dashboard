@@ -12,17 +12,17 @@
     <ul class="settings-list client-dashboard-cards">
       <% @setting.ordered_cards.each_with_index do |key, index| %>
         <%# herb:key key %>
-        <li class="list-row">
-          <div class="list-row__content">
-            <p class="list-row__title"><%= ClientDashboard::Setting::CARDS[key].first %><% unless @setting.shown?(key) %> <%= badge "Off", tone: :neutral %><% end %></p>
-            <p class="list-row__desc"><%= ClientDashboard::Setting::CARDS[key].last %></p>
+        <li class="settings-item">
+          <div class="settings-item__content">
+            <p class="settings-item__title"><%= ClientDashboard::Setting::CARDS[key].first %><% unless @setting.shown?(key) %> <%= ui :badge, variant: :secondary, content: "Off" %><% end %></p>
+            <p class="settings-item__desc"><%= ClientDashboard::Setting::CARDS[key].last %></p>
           </div>
-          <div class="list-row__actions">
-            <%= button_to client_dashboard_card_moves_path(card: key, direction: "up"), class: "icon-button", title: "Move up", disabled: index.zero? do %>
-              <%= icon_tag "arrow-up" %><span class="visually-hidden">Move <%= ClientDashboard::Setting::CARDS[key].first %> up</span>
+          <div class="settings-item__actions client-dashboard-cards__actions">
+            <%= button_to client_dashboard_card_moves_path(card: key, direction: "up"), class: "ui-button", data: { variant: "ghost", size: "icon-sm" }, title: "Move up", disabled: index.zero? do %>
+              <%= icon_tag "arrow-up" %><span class="ui-sr-only">Move <%= ClientDashboard::Setting::CARDS[key].first %> up</span>
             <% end %>
-            <%= button_to client_dashboard_card_moves_path(card: key, direction: "down"), class: "icon-button client-dashboard-cards__down", title: "Move down", disabled: index == @setting.ordered_cards.size - 1 do %>
-              <%= icon_tag "arrow-up" %><span class="visually-hidden">Move <%= ClientDashboard::Setting::CARDS[key].first %> down</span>
+            <%= button_to client_dashboard_card_moves_path(card: key, direction: "down"), class: "ui-button", data: { variant: "ghost", size: "icon-sm" }, title: "Move down", disabled: index == @setting.ordered_cards.size - 1 do %>
+              <%= icon_tag "arrow-up", class: "client-dashboard-cards__down" %><span class="ui-sr-only">Move <%= ClientDashboard::Setting::CARDS[key].first %> down</span>
             <% end %>
           </div>
         </li>
@@ -30,23 +30,20 @@
     </ul>
   </section>
 
-  <%= form_with model: @setting, url: client_dashboard_settings_path, method: :patch, scope: :setting, class: "settings-form" do |form| %>
+  <%= form_with model: @setting, url: client_dashboard_settings_path, method: :patch, scope: :setting, class: "settings-form client-dashboard-settings__form" do |form| %>
     <section class="settings-section">
       <header class="settings-section__head">
         <h2>What shows</h2>
         <p class="settings-section__description">Switch off a card your <%= term(:client, count: 2).downcase %> don’t need.</p>
       </header>
       <% if @setting.errors.any? %>
-        <div class="alert alert--danger" role="alert"><%= @setting.errors.full_messages.to_sentence %>.</div>
+        <%= ui :alert, variant: :destructive, title: "Couldn’t save", description: "#{@setting.errors.full_messages.to_sentence}." %>
       <% end %>
       <%= hidden_field_tag "setting[shown][]", "", id: nil %>
       <div class="client-dashboard-settings__cards">
         <% @setting.ordered_cards.each do |key| %>
           <%# herb:key key %>
-          <label class="checkbox">
-            <%= check_box_tag "setting[shown][]", key, @setting.shown?(key), id: "setting_shown_#{key}" %>
-            <span><%= ClientDashboard::Setting::CARDS[key].first %></span>
-          </label>
+          <%= ui :checkbox, name: "setting[shown][]", value: key, checked: @setting.shown?(key), id: "setting_shown_#{key}", label: ClientDashboard::Setting::CARDS[key].first %>
         <% end %>
       </div>
     </section>
@@ -56,27 +53,24 @@
         <h2>Greeting</h2>
         <p class="settings-section__description">The dashboard opens with “Hello,” and the person’s first name. This is the line under it.</p>
       </header>
-      <label class="field">
-        <span class="field__label">The line under the greeting</span>
+      <%= form.ui :field, :greeting, label: "The line under the greeting" do %>
         <%= form.text_field :greeting, placeholder: ClientDashboard::Setting::DEFAULT_GREETING, maxlength: 200, autocomplete: "off" %>
-      </label>
+      <% end %>
     </section>
 
     <section class="settings-section">
       <header class="settings-section__head">
         <h2>How far the cards look</h2>
       </header>
-      <div class="field-row">
-        <label class="field">
-          <span class="field__label">Coming up: days ahead</span>
+      <div class="client-dashboard-settings__row">
+        <%= form.ui :field, :due_days, label: "Coming up: days ahead" do %>
           <%= form.number_field :due_days, min: 1, max: 90 %>
-        </label>
-        <label class="field">
-          <span class="field__label">New documents and Recently done: days back</span>
+        <% end %>
+        <%= form.ui :field, :recent_days, label: "New documents and Recently done: days back" do %>
           <%= form.number_field :recent_days, min: 1, max: 365 %>
-        </label>
+        <% end %>
       </div>
-      <div class="button-row"><button type="submit" class="btn btn--primary">Save</button></div>
+      <div><%= ui :button, type: :submit, content: "Save" %></div>
     </section>
   <% end %>
 

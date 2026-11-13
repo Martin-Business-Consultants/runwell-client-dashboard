@@ -1,38 +1,45 @@
-/* Linked on every page while the plugin is on (Runwell::Plugins.stylesheet). Runwell's design
-/* tokens only (docs/theming.md), so themes reach it. */
-@layer components {
-  /* The portal's dashboard: the core lays the slot's children out as a grid of cards; the
-  /* greeting takes the whole first row. */
-  .client-dashboard__greeting { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--s-1); }
-  .client-dashboard__hello { margin: 0; font-size: var(--text-title); font-weight: var(--weight-strong); letter-spacing: -.01em; }
-  .client-dashboard__line { margin: 0; color: var(--text-muted); font-size: var(--text-read); }
+/* tokens: runeui */
+/* Linked on every page while the plugin is on (Runwell::Plugins.stylesheet). runeui's tokens only
+/* (shadcn's names and --ui-*; docs/theming.md), so themes reach it. */
 
-  .client-dashboard__card { min-width: 0; }
-  .client-dashboard__card .card__head { padding: var(--s-4) var(--s-5); }
-  .client-dashboard__list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
-  .client-dashboard__row { display: flex; align-items: center; gap: var(--s-3); min-width: 0; padding: var(--s-3) var(--s-5); }
-  .client-dashboard__row + .client-dashboard__row { border-top: 1px solid var(--line); }
-  .client-dashboard__what { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
-  .client-dashboard__title { overflow-wrap: anywhere; font-weight: var(--weight-strong); }
-  .client-dashboard__title a { color: inherit; text-decoration: none; }
-  .client-dashboard__title a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .client-dashboard__meta { color: var(--text-muted); font-size: var(--text-meta); }
-  .client-dashboard__meta:empty { display: none; }
-  .client-dashboard__row--file .document-link { flex: 1; min-width: 0; color: var(--text); text-decoration: none; }
+/* The portal's dashboard: the core lays the slot's children out as a grid of cards; the
+/* greeting takes the whole first row. */
+.client-dashboard__greeting { grid-column: 1 / -1; display: flex; flex-direction: column; gap: .25rem; }
+.client-dashboard__hello { margin: 0; font-size: 1.25rem; font-weight: 500; letter-spacing: -.01em; }
+.client-dashboard__line { margin: 0; color: var(--muted-foreground); }
 
-  /* Who hears about what, on a client: two cards, each a table of people by kind of notice. */
-  .client-dashboard-notices { display: flex; flex-direction: column; gap: var(--s-5); }
-  .client-dashboard-notices .card__head { padding: var(--s-4) var(--s-5); }
-  .client-dashboard-notices__wrap { border: 0; border-radius: 0; background: none; }
-  .client-dashboard-notices__table th { white-space: nowrap; }
-  .client-dashboard-notices__table :is(th, td):first-child { padding-left: var(--s-5); }
-  .client-dashboard-notices__table .combobox { min-width: 7rem; }
-  .client-dashboard-notices__who { font-weight: var(--weight-strong); white-space: nowrap; }
-  .client-dashboard-notices__form { display: block; }
+/* Each card (ui :card): its rows run edge to edge under a hairline. */
+.client-dashboard__card { min-width: 0; }
+.client-dashboard__card-title { margin: 0; font: inherit; }
+.client-dashboard__card > [data-slot="card-content"] { padding-inline: 0; }
+.client-dashboard__list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
+.client-dashboard__row { display: flex; align-items: center; gap: .75rem; min-width: 0; padding: .75rem 1.5rem 0; }
+.client-dashboard__row + .client-dashboard__row { margin-top: .75rem; border-top: 1px solid var(--border); }
+.client-dashboard__what { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+.client-dashboard__title { overflow-wrap: anywhere; font-weight: 500; }
+.client-dashboard__title a { color: inherit; text-decoration: none; }
+.client-dashboard__title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.client-dashboard__meta { color: var(--muted-foreground); font-size: var(--ui-text-xs); }
+.client-dashboard__meta:empty { display: none; }
+.client-dashboard__row--file .document-link { flex: 1; min-width: 0; color: var(--foreground); text-decoration: none; }
 
-  /* Its settings: the cards in order with their move buttons, and the switches in a column. */
-  .client-dashboard-cards .list-row__actions { display: flex; gap: var(--s-1); }
-  .client-dashboard-cards .list-row__actions form { display: inline-flex; }
-  .client-dashboard-cards__down .icon { transform: rotate(180deg); }
-  .client-dashboard-settings__cards { display: flex; flex-direction: column; gap: var(--s-2); }
-}
+/* Who hears about what, on a client: two cards, each a table (ui :table) of people by kind of
+/* notice, edge to edge under the card's header. */
+.client-dashboard-notices { display: flex; flex-direction: column; gap: 1.5rem; }
+.client-dashboard-notices__card { padding-bottom: 0; }
+.client-dashboard-notices__card > [data-slot="card-content"] { padding-inline: 0; }
+.client-dashboard-notices__card [data-slot="table-scroll"] { border-top: 1px solid var(--border); }
+.client-dashboard-notices__table :is(th, td):first-child { padding-left: 1.5rem; }
+.client-dashboard-notices__table :is(th, td):last-child { padding-right: 1.5rem; }
+.client-dashboard-notices__table tbody tr:last-child td { border-bottom: 0; }
+.client-dashboard-notices__who { font-weight: 500; white-space: nowrap; }
+.client-dashboard-notices__form { display: block; }
+.client-dashboard-notices__table [data-slot="select-trigger"] { min-width: 6.5rem; }
+.client-dashboard-notices__empty { padding: 0 1.5rem 1.5rem; }
+
+/* Its settings: the cards in order with their move buttons, and the checkboxes in a column. */
+.client-dashboard-cards__actions { gap: .25rem; }
+.client-dashboard-cards__down { transform: rotate(180deg); }
+.client-dashboard-settings__cards { display: flex; flex-direction: column; gap: .5rem; }
+.client-dashboard-settings__row { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 1rem; }
+.client-dashboard-settings__form { gap: 2.5rem; }

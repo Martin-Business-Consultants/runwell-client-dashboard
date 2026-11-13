@@ -56,7 +56,7 @@ dashboard shows them.
 
 ## Installing
 
-In Runwell (5.31 or newer): **Settings › Plugins**, add
+In Runwell (6.0 or newer): **Settings › Plugins**, add
 `Martin-Business-Consultants/runwell-client-dashboard`, then switch it on. Removing it leaves the
 portal opening on the client's work, and notices going to whoever Runwell would usually tell; its
 tables (`client_dashboard_settings`, `client_dashboard_rules`) stay.

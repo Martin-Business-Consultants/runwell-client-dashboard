@@ -24,6 +24,13 @@ nothing of the core's beyond it) and its `AGENTS.md` (the conventions this code 
   on the tab by itself; give it a heading in `Rule::HEADINGS`
 - The tab on each client (`slots/_client_panel`) is a form per cell that saves on change
   (`RulesController#update`); agents use `show_client_notices` and `set_client_notice`
+- Views draw with runeui, Runwell 6.0's UI kit: `ui :card`, `ui :table`, `ui :badge`, `ui :alert`,
+  `ui :empty`, `ui :checkbox`, `ui :button` (or `class: "ui-button"` with `data-variant`/`data-size`
+  on `button_to`), and `form.ui :field` around each control. No rune_ui helpers or classes
+- CSS (`client_dashboard.css`, marked `/* tokens: runeui */`) reads runeui's tokens only (shadcn's
+  names: `--foreground`, `--muted-foreground`, `--border`, `--primary` for the brand…; runeui's
+  `--ui-*` scale; `docs/theming.md`), never rune_ui's old names (`--text-*`, `--line`, `--s-*`).
+  Spacing in rems
 
 ## Rules
 
